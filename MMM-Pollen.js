@@ -19,7 +19,7 @@ Module.register("MMM-Pollen", {
         }, this.config.updateInterval * 60 * 1000);
     },
   
-    getData: async function()
+    getData: async function(apiUrl)
     {
         //first make sure the table is empty again
         var rowCount = this.table.rows.length;
@@ -29,7 +29,7 @@ Module.register("MMM-Pollen", {
   
         try
         {
-            const response = await fetch(this.api_url);
+            const response = await fetch(apiUrl);
             if (!response.ok)
             {
                 throw new Error(`Response status: ${response.status}`);
@@ -64,8 +64,8 @@ Module.register("MMM-Pollen", {
     // Override dom generator.
     getDom: function ()
     {
-      this.api_url = this.constructUrl();
-      this.getData();
+      var api_url = this.constructUrl();
+      this.getData(api_url);
       var wrapper = document.createElement("div");
       wrapper.appendChild(this.table);
       return wrapper;
