@@ -8,12 +8,22 @@ Module.register("MMM-Pollen", {
           days: 1,                              //changing this does not have any affect at the moment
           updateInterval: 60
     },
-  
+	
+	getTranslations: function() {
+		return {
+                en: "translations/en.json",
+                fr: "translations/fr.json",
+                de: "translations/de.json",
+                es: "translations/es.json",
+				nl: "translations/nl.json"
+		}
+	},
+
+
   
   
     start: function()
     {
-        this.table=document.createElement("table");
         setInterval(() => {
             this.updateDom();
         }, this.config.updateInterval * 60 * 1000);
@@ -21,11 +31,7 @@ Module.register("MMM-Pollen", {
   
     getData: async function(apiUrl)
     {
-        //first make sure the table is empty again
-        var rowCount = this.table.rows.length;
-        for (var i = 0; i < rowCount; i++) {
-            this.table.deleteRow(0);
-        }
+        var table=document.createElement("table");
   
         try
         {
@@ -49,11 +55,12 @@ Module.register("MMM-Pollen", {
                 if (entry.indexInfo != null)
                     valCell.innerHTML = entry.indexInfo.category;
                 else
-                    valCell.innerHTML = "onbekend";
+                    valCell.innerHTML = this.translate("Unknown");
                 
                 row.appendChild(valCell);
-                this.table.appendChild(row);
+                table.appendChild(row);
             }
+            return table;
         } catch (error) {
             Log.error(error.message);
             console.error(error.message);
@@ -62,12 +69,12 @@ Module.register("MMM-Pollen", {
   
   
     // Override dom generator.
-    getDom: function ()
+    getDom: async function ()
     {
       var api_url = this.constructUrl();
-      this.getData(api_url);
+      var dataTable = await this.getData(api_url);
       var wrapper = document.createElement("div");
-      wrapper.appendChild(this.table);
+      wrapper.appendChild(dataTable);
       return wrapper;
     },
 
@@ -97,8 +104,5 @@ Module.register("MMM-Pollen", {
         Log.info("The constructed url is:" + url);
         return url;
     }
-  
-  
-  
   
   });
