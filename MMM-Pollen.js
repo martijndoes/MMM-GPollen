@@ -150,9 +150,9 @@ Module.register("MMM-Pollen", {
 		  disableDefaultUI: true,
 		});
 
-		const pollenMapTypeGrass = new PollenMapType(new google.maps.Size(256, 256),"Grass_UPI");
-		const pollenMapTypeTree = new PollenMapType(new google.maps.Size(256, 256),"Tree_UPI");
-		const pollenMapTypeweed = new PollenMapType(new google.maps.Size(256, 256),"Weed_UPI");
+		const pollenMapTypeGrass = new PollenMapType(new google.maps.Size(256, 256),"Grass_UPI", this.config.googleApiKey);
+		const pollenMapTypeTree = new PollenMapType(new google.maps.Size(256, 256),"Tree_UPI", this.config.googleApiKey);
+		const pollenMapTypeweed = new PollenMapType(new google.maps.Size(256, 256),"Weed_UPI", this.config.googleApiKey);
 		
 		map.overlayMapTypes.insertAt(0, pollenMapTypeGrass);
 		var i = 1;
@@ -233,9 +233,10 @@ class PollenMapType
 	name = null;
 	projection = null;
 	radius = 6378137;
-	constructor(tileSize, pollen) {
+	constructor(tileSize, pollen, apikey) {
 	  this.tileSize = tileSize;
 	  this.pollen = pollen;
+	  this.apikey = apikey;
 	}
 
 	getTile(coord, zoom, ownerDocument) 
@@ -246,7 +247,7 @@ class PollenMapType
 
 		const x = coord.x;
 		const y = coord.y;
-		const key = "AIzaSyC7QCsLEbnnxzrWCpkAqyoQ31AjThf6c0o";
+		const key = this.apikey;
 		img.style.opacity = 0.8;
 		img.src = `https://pollen.googleapis.com/v1/mapTypes/${mapType}/heatmapTiles/${zoom}/${x}/${y}?key=${key}`;
 		return img;
