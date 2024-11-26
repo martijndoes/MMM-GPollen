@@ -1,3 +1,6 @@
 {
-    "Unknown": "Unbekannt"
+    "None": "Kein",
+	"Grass": "Gras",
+	"Tree": "Baum",
+	"Weed": "Unkraut"
 }
