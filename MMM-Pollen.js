@@ -7,7 +7,7 @@ Module.register("MMM-Pollen", {
           longitude: 52.3108558,
           latitude: 4.950632,
           language: "nl",
-          days: 1,                              //changing this does not have any affect at the moment
+          days: 5,                              //number of forecast days you want to display in table view
           updateInterval: 60,					//in minutes. How often will it retrieve new info from the API.
 		  rotateInterval: 10					//in seconds. How many seconds between pollentype switches in the map
     },
@@ -28,6 +28,11 @@ Module.register("MMM-Pollen", {
 		]
 	},
 	
+	getScripts: function() {
+		return [
+			'PollenMapType.js'
+		]
+	},	
 
     start: function()
     {
@@ -44,7 +49,7 @@ Module.register("MMM-Pollen", {
 		{
 			var wrapper = document.createElement("div");
 			var script = document.createElement("script");
-			var src = document.createAttribute("src");
+			wrapper.appendChild(script);
 			var key = this.config.googleApiKey
 			//thanks to https://forum.magicmirror.builders/topic/716/can-t-load-script-correctly/2 @ianperrin for this solution!
 			this.getScript('https://www.google.com/jsapi', function() { 
@@ -52,15 +57,25 @@ Module.register("MMM-Pollen", {
 					self.initMap();
 				}});
 			});
-
+			
 			
 			var map = document.createElement("div");
 			var id = document.createAttribute("id");
-			id.value = "map";
+			id.value = "mapDiv";
 			map.setAttributeNode(id);
-			
-			wrapper.appendChild(script);
 			wrapper.appendChild(map);
+			
+			var map2 = document.createElement("div");
+			var id2 = document.createAttribute("id");
+			id2.value = "mapDiv2";
+			map2.setAttributeNode(id2);
+			wrapper.appendChild(map2);
+			
+			var map3 = document.createElement("div");
+			var id3 = document.createAttribute("id");
+			id3.value = "mapDiv3";
+			map3.setAttributeNode(id3);
+			wrapper.appendChild(map3);
 		}
 		else if (this.config.mode === "table")
 		{
@@ -69,30 +84,12 @@ Module.register("MMM-Pollen", {
 			var wrapper = document.createElement("div");
 			wrapper.appendChild(dataTable);
 		}
- 
-		
 
       return wrapper;
     },
 	
-	getScript: function(source, callback) {
-      var script = document.createElement('script');
-      var prior = document.getElementsByTagName('script')[0];
-      script.async = 1;
-      prior.parentNode.insertBefore(script, prior);
-  
-      script.onload = script.onreadystatechange = function( _, isAbort ) {
-          if(isAbort || !script.readyState || /loaded|complete/.test(script.readyState) ) {
-              script.onload = script.onreadystatechange = null;
-              script = undefined;
-  
-              if(!isAbort) { if(callback) callback(); }
-          }
-      };
-  
-      script.src = source;
-    },
 
+	//getting the data for the table view
     getData: async function(apiUrl)
     {
         var table=document.createElement("table");
@@ -106,24 +103,58 @@ Module.register("MMM-Pollen", {
             }
   
             const json = await response.json();
-            var el = json.dailyInfo[0].pollenTypeInfo;
-            var len = el.length;
-            for (var i = 0; i < len; i++)
-            {
-                var entry = json.dailyInfo[0].pollenTypeInfo[i];
-                var row = document.createElement("tr");
-                var descCell = document.createElement("td");
-                descCell.innerHTML = entry.displayName;
-                row.appendChild(descCell);
-                var valCell = document.createElement("td");
-                if (entry.indexInfo != null)
-                    valCell.innerHTML = entry.indexInfo.category;
-                else
-                    valCell.innerHTML = this.translate("None");
-                
-                row.appendChild(valCell);
-                table.appendChild(row);
-            }
+			
+			//header
+			var label1 = json.dailyInfo[0].pollenTypeInfo[0].displayName;
+			var label2 = json.dailyInfo[0].pollenTypeInfo[1].displayName;
+			var label3 = json.dailyInfo[0].pollenTypeInfo[2].displayName;
+			var headerRow = document.createElement("tr");
+			var headerCell = document.createElement("th");
+			headerCell.innerHTML = " ";
+			headerRow.appendChild(headerCell);
+			var headerCell1 = document.createElement("th");
+			headerCell1.innerHTML = label1;
+			headerRow.appendChild(headerCell1);
+			var headerCell2 = document.createElement("th");
+			headerCell2.innerHTML = label2;
+			headerRow.appendChild(headerCell2);
+			var headerCell3 = document.createElement("th");
+			headerCell3.innerHTML = label3;
+			headerRow.appendChild(headerCell3);
+			table.appendChild(headerRow);
+			
+			
+			
+			var dayEl = json.dailyInfo;
+            var dayLen = dayEl.length;
+			
+			for(var d = 0; d < dayLen; d++)
+			{
+				var el = json.dailyInfo[d].pollenTypeInfo;
+				var len = el.length;
+				
+				
+				
+				var row = document.createElement("tr");
+				var dayCell = document.createElement("td");
+				dayCell.innerHTML = this.getDayName(d, this.config.language);
+				row.appendChild(dayCell);
+				
+				
+				for (var i = 0; i < len; i++)
+				{
+					var entry = json.dailyInfo[d].pollenTypeInfo[i];
+					var valCell = document.createElement("td");
+					if (entry.indexInfo != null)
+						valCell.innerHTML = entry.indexInfo.category;
+					else
+						valCell.innerHTML = this.translate("None");		
+
+					row.appendChild(valCell);
+				}
+				table.appendChild(row);
+			}
+
             return table;
         } catch (error) {
             Log.error(error.message);
@@ -132,67 +163,7 @@ Module.register("MMM-Pollen", {
     },
 	
 	
-	initMap: function() 
-	{
-		const myLatLng = { lat: this.config.latitude, lng: this.config.longitude };
-
-		const map = new google.maps.Map(document.getElementById("map"), {
-		  mapId: "ffcdd6091fa9fb03",
-		  zoom: this.config.zoomLevel,
-		  center: myLatLng,
-		  maxZoom: 16,
-		  minZoom: 3,
-		  restriction: {
-			latLngBounds: {north: 80, south: -80, west: -180, east: 180},
-			strictBounds: true,
-		  },
-		  streetViewControl: false,
-		  disableDefaultUI: true,
-		});
-
-		const pollenMapTypeGrass = new PollenMapType(new google.maps.Size(256, 256),"Grass_UPI", this.config.googleApiKey);
-		const pollenMapTypeTree = new PollenMapType(new google.maps.Size(256, 256),"Tree_UPI", this.config.googleApiKey);
-		const pollenMapTypeweed = new PollenMapType(new google.maps.Size(256, 256),"Weed_UPI", this.config.googleApiKey);
-		
-		map.overlayMapTypes.insertAt(0, pollenMapTypeGrass);
-		var i = 1;
-		var el = document.querySelector(".MMM-Pollen .module-header");
-		el.innerHTML = this.getHeader() + " - " + this.translate("Grass");
-		setInterval(() => 
-		{
-			//first remove the existing overlay
-			map.overlayMapTypes.setAt( 0, null);
-			
-			//add an overlay
-			if (i === 1)
-			{
-				map.overlayMapTypes.insertAt(0, pollenMapTypeweed); 
-				el.innerHTML = this.getHeader() + " - " + this.translate("Weed");
-			}
-			else if (i === 2)
-			{
-				map.overlayMapTypes.insertAt(0, pollenMapTypeTree);
-				el.innerHTML = this.getHeader() + " - " + this.translate("Tree");
-			}
-			else if (i === 3)
-			{
-				map.overlayMapTypes.insertAt(0, pollenMapTypeGrass);
-				el.innerHTML = this.getHeader() + " - " + this.translate("Grass");
-			}
-			
-			//reset the counter
-			if (i === 3)
-				i=1;
-			else
-				i++;
-			
-        }, this.config.rotateInterval * 1000);
-		
-    
-	},
-	
-  
-  
+	//construct the URL for the table view
     constructUrl: function()
     {
         var url = "https://pollen.googleapis.com/v1/forecast:lookup?";
@@ -217,62 +188,134 @@ Module.register("MMM-Pollen", {
 
         Log.info("The constructed url is:" + url);
         return url;
+    },
+	
+	
+	getDayName: function(addDays, locale)
+	{
+		var date = new Date();
+		date.setDate(date.getDate() + addDays);
+		return date.toLocaleDateString(locale, { weekday: 'long' });  
+	},	
+	
+	
+	//init the map view
+	initMap: function() 
+	{
+		const myLatLng = { lat: this.config.latitude, lng: this.config.longitude };
+
+		const map = new google.maps.Map(document.getElementById("mapDiv"), {
+		  mapId: "ffcdd6091fa9fb03",
+		  zoom: this.config.zoomLevel,
+		  center: myLatLng,
+		  maxZoom: 16,
+		  minZoom: 3,
+		  restriction: {
+			latLngBounds: {north: 80, south: -80, west: -180, east: 180},
+			strictBounds: true,
+		  },
+		  streetViewControl: false,
+		  disableDefaultUI: true,
+		}); 
+		
+		const map2 = new google.maps.Map(document.getElementById("mapDiv2"), {
+		  mapId: "ffcdd6091fa9fb03",
+		  zoom: this.config.zoomLevel,
+		  center: myLatLng,
+		  maxZoom: 16,
+		  minZoom: 3,
+		  restriction: {
+			latLngBounds: {north: 80, south: -80, west: -180, east: 180},
+			strictBounds: true,
+		  },
+		  streetViewControl: false,
+		  disableDefaultUI: true,
+		});
+		
+		const map3 = new google.maps.Map(document.getElementById("mapDiv3"), {
+		  mapId: "ffcdd6091fa9fb03",
+		  zoom: this.config.zoomLevel,
+		  center: myLatLng,
+		  maxZoom: 16,
+		  minZoom: 3,
+		  restriction: {
+			latLngBounds: {north: 80, south: -80, west: -180, east: 180},
+			strictBounds: true,
+		  },
+		  streetViewControl: false,
+		  disableDefaultUI: true,
+		});
+
+		const pollenMapTypeGrass = new PollenMapType(new google.maps.Size(256, 256),"Grass_UPI", this.config.googleApiKey);
+		const pollenMapTypeTree = new PollenMapType(new google.maps.Size(256, 256),"Tree_UPI", this.config.googleApiKey);
+		const pollenMapTypeWeed = new PollenMapType(new google.maps.Size(256, 256),"Weed_UPI", this.config.googleApiKey);
+		
+		map.overlayMapTypes.insertAt(0, pollenMapTypeGrass);
+		map2.overlayMapTypes.insertAt(0, pollenMapTypeTree);
+		map3.overlayMapTypes.insertAt(0, pollenMapTypeWeed);
+		
+		var divMap = document.getElementById('mapDiv');
+		var divMap2 = document.getElementById('mapDiv2');
+		var divMap3 = document.getElementById('mapDiv3');
+		
+		divMap.style.display = "none";
+		divMap2.style.display = "none";
+		divMap3.style.display = "block";
+		
+		var i = 1;
+		var el = document.querySelector(".MMM-Pollen .module-header");
+		el.innerHTML = this.getHeader() + " - " + this.translate("Grass");
+		setInterval(() => 
+		{		
+			if (i === 1)
+			{
+				el.innerHTML = this.getHeader() + " - " + this.translate("Weed");
+				divMap.style.display = "block";
+				divMap2.style.display = "none";
+				divMap3.style.display = "none";
+			}
+			else if (i === 2)
+			{
+				el.innerHTML = this.getHeader() + " - " + this.translate("Tree");
+				divMap.style.display = "none";
+				divMap2.style.display = "block";
+				divMap3.style.display = "none";
+			}
+			else if (i === 3)
+			{
+				el.innerHTML = this.getHeader() + " - " + this.translate("Grass");
+				divMap.style.display = "none";
+				divMap2.style.display = "none";
+				divMap3.style.display = "block";
+			}
+			
+			//reset the counter
+			if (i === 3)
+				i=1;
+			else
+				i++;
+			
+        }, this.config.rotateInterval * 1000);
+	},
+	
+	
+	getScript: function(source, callback) {
+      var script = document.createElement('script');
+      var prior = document.getElementsByTagName('script')[0];
+      script.async = 1;
+      prior.parentNode.insertBefore(script, prior);
+  
+      script.onload = script.onreadystatechange = function( _, isAbort ) {
+          if(isAbort || !script.readyState || /loaded|complete/.test(script.readyState) ) {
+              script.onload = script.onreadystatechange = null;
+              script = undefined;
+  
+              if(!isAbort) { if(callback) callback(); }
+          }
+      };
+  
+      script.src = source;
     }
   
   });
  
- 
- 
-class PollenMapType 
-{
-	tileSize;
-	pollen;
-	alt = null;
-	maxZoom = 16;
-	minZoom = 3;
-	name = null;
-	projection = null;
-	radius = 6378137;
-	constructor(tileSize, pollen, apikey) {
-	  this.tileSize = tileSize;
-	  this.pollen = pollen;
-	  this.apikey = apikey;
-	}
-
-	getTile(coord, zoom, ownerDocument) 
-	{
-		const img = ownerDocument.createElement("img");
-		const mapType = this.pollen;
-		const normalizedCoord = getNormalizedCoord(coord, zoom);
-
-		const x = coord.x;
-		const y = coord.y;
-		const key = this.apikey;
-		img.style.opacity = 0.8;
-		img.src = `https://pollen.googleapis.com/v1/mapTypes/${mapType}/heatmapTiles/${zoom}/${x}/${y}?key=${key}`;
-		return img;
-	}
-	releaseTile(tile) {}
-}
-  
-
-  
-function getNormalizedCoord(coord, zoom) 
-{
-	const y = coord.y;
-	let x = coord.x;
-	// Define the tile range in one direction. The range is dependent on zoom level:
-	// 0 = 1 tile, 1 = 2 tiles, 2 = 4 tiles, 3 = 8 tiles, etc.
-	const tileRange = 1 << zoom;
-	// don't repeat across y-axis (vertically)
-	if (y < 0 || y >= tileRange) {
-	  return null;
-	}
-
-	// repeat across x-axis
-	if (x < 0 || x >= tileRange) {
-		x = ((x % tileRange) + tileRange) % tileRange;
-	}
-	return { x: x, y: y };
-}
-  

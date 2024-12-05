@@ -1,4 +1,16 @@
-#map {
+#mapDiv {
+	position:inherit;
+	height:300px; 
+	width:300px;
+}
+
+#mapDiv2 {
+	position:inherit;
+	height:300px; 
+	width:300px;
+}
+
+#mapDiv3 {
 	position:inherit;
 	height:300px; 
 	width:300px;
