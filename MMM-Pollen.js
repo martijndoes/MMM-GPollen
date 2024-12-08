@@ -1,4 +1,4 @@
-Module.register("MMM-Pollen", {
+Module.register("MMM-GPollen", {
     // Default module config.
     defaults: {
 		  mode: "table",						//table will display simple table. Map will display google maps with overlay
