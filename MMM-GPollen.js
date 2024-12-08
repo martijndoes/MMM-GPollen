@@ -24,7 +24,7 @@ Module.register("MMM-GPollen", {
 	
 	getStyles: function() {
 		return [
-			'MMM-Pollen.css'
+			'MMM-GPollen.css'
 		]
 	},
 	
