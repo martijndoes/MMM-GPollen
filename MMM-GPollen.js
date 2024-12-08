@@ -270,7 +270,7 @@ Module.register("MMM-GPollen", {
 
 		//rotate between the three maps every "rotateInterval" seconds. Update the header to show which maps is being shown.
 		var i = 1;
-		var el = document.querySelector(".MMM-Pollen .module-header");
+		var el = document.querySelector(".MMM-GPollen .module-header");
 		el.innerHTML = this.getHeader() + " - " + this.translate("Grass");
 		setInterval(() => 
 		{		
