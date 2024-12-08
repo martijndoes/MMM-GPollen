@@ -3,6 +3,12 @@
 This module has two options: either it can display a table with the pollen forecast for a number of days in your area or it can display a google maps map with a colored overlay.
 It uses the google API to retrieve this information. Not all countries/regions are supported (but most are). See <a href="https://developers.google.com/maps/documentation/pollen/coverage?hl=en">this</a> list for an overview of the supported countries.
 
+<img src="https://github.com/martijndoes/Screenshots/blob/main/Pollen-map.png" />
+map mode
+
+<img src="https://github.com/martijndoes/Screenshots/blob/main/Pollen-table.png" />
+table mode
+
 
 <h3>Prerequisites</h3>
 Go to https://console.cloud.google.com/google/maps-apis/start and use your google account to request an API key.
@@ -52,7 +58,7 @@ Alter your config.js (see next chapter) to display the module
   <tr>
     <td>language</td>
     <td>en</td>
-    <td>The language in which it will be displayed. Some of the labels are translated by google (for example the pollen types), others are translated by the module. At the moment this module supports english, dutch, german, french and spanish.</td>
+    <td>The language in which it will be displayed. Some of the labels are translated by google (for example the pollen types), others are translated by the module. At the moment this module supports english, dutch, german, french and spanish. This setting will translate the labels that are retrieved from google, for the other translations it will use the main language setting in your config.</td>
   </tr>
   <tr>
     <td>updateInterval</td>
