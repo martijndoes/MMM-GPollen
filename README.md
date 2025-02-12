@@ -87,31 +87,31 @@ Alter your config.js (see next chapter) to display the module
 
 Here is an example config for the map display:<br />
 {<br />
-  module: 'MMM-GPollen',<br />
-  header: 'Pollen',<br />
-  position: 'top_right',<br />
-  config: {<br />
-    mode: 'table',<br />
-    googleApiKey: 'MYGOOGLEAPIKEY',<br />
-    longitude: 4.95,<br />
-    latitude: 52.31,<br />
-    days: 3,<br />
-    language: 'nl'<br />
-  }<br />
+&emsp;  module: 'MMM-GPollen',<br />
+&emsp;  header: 'Pollen',<br />
+&emsp;  position: 'top_right',<br />
+&emsp;  config: {<br />
+&emsp;&emsp;    mode: 'table',<br />
+&emsp;&emsp;    googleApiKey: 'MYGOOGLEAPIKEY',<br />
+&emsp;&emsp;    longitude: 4.95,<br />
+&emsp;&emsp;    latitude: 52.31,<br />
+&emsp;&emsp;    days: 3,<br />
+&emsp;&emsp;    language: 'nl'<br />
+&emsp;  }<br />
 }<br />
 <br />
 <br />
 And an example for the map display:<br />
 {<br />
-  module: 'MMM-GPollen',<br />
-  header: 'Pollen',<br />
-  position: 'top_right',<br />
-  config: {<br />
-	  mode: 'map',<br />
-	  zoomLevel: 9,<br />
-    googleApiKey: 'MYGOOGLEAPIKEY',<br />
-    longitude: 4.95,<br />
-    latitude: 52.31,<br />
-    language: 'nl'<br />
-  }<br />
+&emsp;  module: 'MMM-GPollen',<br />
+&emsp;  header: 'Pollen',<br />
+&emsp;  position: 'top_right',<br />
+&emsp;  config: {<br />
+&emsp;&emsp;	  mode: 'map',<br />
+&emsp;&emsp;	  zoomLevel: 9,<br />
+&emsp;&emsp;    googleApiKey: 'MYGOOGLEAPIKEY',<br />
+&emsp;&emsp;    longitude: 4.95,<br />
+&emsp;&emsp;    latitude: 52.31,<br />
+&emsp;&emsp;    language: 'nl'<br />
+&emsp;  }<br />
 }<br />
