@@ -85,33 +85,33 @@ Alter your config.js (see next chapter) to display the module
 
 <h3>Example config</h3>
 
-Here is an example config for the map display:
-{
-  module: 'MMM-GPollen',
-  header: 'Pollen',
-  position: 'top_right',
-  config: {
-    mode: 'table',
-    googleApiKey: 'MYGOOGLEAPIKEY',
-    longitude: 4.95,
-    latitude: 52.31,
-    days: 3,
-    language: 'nl'
-  }
-}
-
-
-And an example for the map display:
-{
-  module: 'MMM-GPollen',
-  header: 'Pollen',
-  position: 'top_right',
-  config: {
-	  mode: 'map',
-	  zoomLevel: 9,
-    googleApiKey: 'MYGOOGLEAPIKEY',
-    longitude: 4.95,
-    latitude: 52.31,
-    language: 'nl'
-  }
-}
+Here is an example config for the map display:<br />
+{<br />
+  module: 'MMM-GPollen',<br />
+  header: 'Pollen',<br />
+  position: 'top_right',<br />
+  config: {<br />
+    mode: 'table',<br />
+    googleApiKey: 'MYGOOGLEAPIKEY',<br />
+    longitude: 4.95,<br />
+    latitude: 52.31,<br />
+    days: 3,<br />
+    language: 'nl'<br />
+  }<br />
+}<br />
+<br />
+<br />
+And an example for the map display:<br />
+{<br />
+  module: 'MMM-GPollen',<br />
+  header: 'Pollen',<br />
+  position: 'top_right',<br />
+  config: {<br />
+	  mode: 'map',<br />
+	  zoomLevel: 9,<br />
+    googleApiKey: 'MYGOOGLEAPIKEY',<br />
+    longitude: 4.95,<br />
+    latitude: 52.31,<br />
+    language: 'nl'<br />
+  }<br />
+}<br />
