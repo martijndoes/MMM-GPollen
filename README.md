@@ -68,7 +68,7 @@ Alter your config.js (see next chapter) to display the module
   <tr>
     <td>days</td>
     <td>3</td>
-    <td>If the module is in table display mode this decides the number of days of forecase that are being displayed.</td>
+    <td>Number between 1 and 5. If the module is in table display mode this decides the number of days of forecase that are being displayed.</td>
   </tr>
   <tr>
     <td>zoomLevel</td>
@@ -83,3 +83,35 @@ Alter your config.js (see next chapter) to display the module
 </table>
 
 
+<h3>Example config</h3>
+
+Here is an example config for the map display:
+{
+  module: 'MMM-GPollen',
+  header: 'Pollen',
+  position: 'top_right',
+  config: {
+    mode: 'table',
+    googleApiKey: 'MYGOOGLEAPIKEY',
+    longitude: 4.95,
+    latitude: 52.31,
+    days: 3,
+    language: 'nl'
+  }
+}
+
+
+And an example for the map display:
+{
+  module: 'MMM-GPollen',
+  header: 'Pollen',
+  position: 'top_right',
+  config: {
+	  mode: 'map',
+	  zoomLevel: 9,
+    googleApiKey: 'MYGOOGLEAPIKEY',
+    longitude: 4.95,
+    latitude: 52.31,
+    language: 'nl'
+  }
+}
