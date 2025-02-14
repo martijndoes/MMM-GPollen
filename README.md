@@ -71,6 +71,11 @@ Alter your config.js (see next chapter) to display the module
     <td>Number between 1 and 5. If the module is in table display mode this decides the number of days of forecase that are being displayed.</td>
   </tr>
   <tr>
+    <td>enableColors</td>
+    <td>true</td>
+    <td>If module is set to "table" mode it will display the pollen level in a color based on how high the number of pollen is.</td>
+  </tr>
+  <tr>
     <td>zoomLevel</td>
     <td>9</td>
     <td>If module is set to "map" mode this will decide how much the map is zoomed in. Value can be between 1 and 13, where 1 will be the most zoomed out (will display entire continent) and 13 (will display a small city)</td>
@@ -96,6 +101,7 @@ Here is an example config for the map display:<br />
 &emsp;&emsp;    longitude: 4.95,<br />
 &emsp;&emsp;    latitude: 52.31,<br />
 &emsp;&emsp;    days: 3,<br />
+&emsp;&emsp;    enableColors: true,<br />
 &emsp;&emsp;    language: 'nl'<br />
 &emsp;  }<br />
 }<br />

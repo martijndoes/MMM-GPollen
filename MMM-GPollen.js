@@ -8,6 +8,7 @@ Module.register("MMM-GPollen", {
           latitude: 4.950632,					//latitude of your location
           language: "en",						//language in which labels are displayed
           days: 3,                              //number of forecast days you want to display in table view
+		  enableColors: true,					//will display the text in a color based on how high the level of pollen is
           updateInterval: 60,					//in minutes. How often will it retrieve new info from the API. Don't set it too low, it will drain your monthly API Calls
 		  rotateInterval: 10					//in seconds. How many seconds between pollentype switches in the map
     },
@@ -148,10 +149,15 @@ Module.register("MMM-GPollen", {
 				{
 					var entry = json.dailyInfo[d].pollenTypeInfo[i];
 					var valCell = document.createElement("td");
+					
 					if (entry.indexInfo != null)
+					{
 						valCell.innerHTML = entry.indexInfo.category;
+						if (this.config.enableColors === true)
+							valCell.style.color = this.getColor(entry.indexInfo.value)
+					}
 					else
-						valCell.innerHTML = this.translate("None");		
+						valCell.innerHTML = this.translate("None");
 
 					row.appendChild(valCell);
 				}
@@ -304,6 +310,26 @@ Module.register("MMM-GPollen", {
 			
         }, this.config.rotateInterval * 1000);
 	},
+	
+	//if in table mode you can present the labels in a color based on the pollenlevel
+	//with special thanks to https://github.com/rakeshloi for the base of the code and the idea
+	getColor: function(pollenCategoryValue) {
+		switch (pollenCategoryValue) {
+			case 1:
+				return 'green'; // Green for Very Low
+			case 2:
+				return 'yellowgreen'; // Green for Low
+			case 3:
+				return 'yellow'; // Yellow for Medium
+			case 4:
+				return 'orange'; // Orange for High
+			case 5:
+				return 'red'; // Red for Very High
+			default:
+				return 'gray'; // Default color if no match
+		}
+	},
+	
 	
 	//gets a JS file and loads it
 	getScript: function(source, callback) {
